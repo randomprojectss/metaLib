@@ -1366,29 +1366,26 @@ function multisections:section(props)
 	local mssection = {}
 	-- // main
 	local tabbutton = utility.new(
-		"Frame",
-		{
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(0,60,0,20),
-			Parent = self.buttons
-		}
-	)
-	--
-	local outline = utility.new(
-		"Frame",
-		{
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0,0,0,0),
-			Parent = tabbutton
-		}
-	)
+    "Frame",
+    {
+        BackgroundTransparency = 1,  -- No background (transparent)
+        BorderSizePixel = 0,  -- No border
+        Size = UDim2.new(0, 60, 0, 20),
+        Parent = self.buttons
+    }
+)
+
+local outline = utility.new(
+    "Frame",
+    {
+        BackgroundTransparency = 1,  -- No background (transparent)
+        BorderSizePixel = 0,  -- No border
+        Size = UDim2.new(1, 0, 1, 0),
+        Position = UDim2.new(0, 0, 0, 0),
+        Parent = tabbutton
+    }
+)
+
 	--
 	local button = utility.new(
 		"TextButton",
