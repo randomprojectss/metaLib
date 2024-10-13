@@ -1876,7 +1876,7 @@ function sections:slider(props)
 		"Frame",
 		{
 			BackgroundTransparency = 1,
-			Size = UDim2.new(1,0,0,25),
+			Size = UDim2.new(1,0,0,10),
 			Parent = self.content
 		}
 	)
