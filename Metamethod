@@ -108,13 +108,14 @@ function library:new(props)
             }
         )
 
-        local red_underline = utility.new(
+        -- Create the red line above the tab
+        local red_line = utility.new(
             "Frame",
             {
-                BackgroundColor3 = Color3.fromRGB(255, 0, 0),  -- Red underline color
-                Size = UDim2.new(1, 0, 0, 2),  -- A thin line at the bottom of the tab
-                Position = UDim2.new(0, 0, 1, 0),  -- Positioned at the bottom
-                BorderSizePixel = 0,  -- No border for the underline
+                BackgroundColor3 = Color3.fromRGB(255, 0, 0),  -- Red line color
+                Size = UDim2.new(1, 0, 0, 2),  -- A thin line
+                Position = UDim2.new(0, 0, 0, -2),  -- Positioned above the tab
+                BorderSizePixel = 0,  -- No border for the line
                 Visible = false,  -- Initially hidden for inactive tabs
                 Parent = tabbutton
             }
@@ -124,11 +125,13 @@ function library:new(props)
             for _, btn in pairs(tabsbuttons:GetChildren()) do
                 if btn:IsA("TextButton") then
                     btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Reset text color
-                    red_underline.Visible = false  -- Hide red underline
+                    if btn:FindFirstChild("Frame") then
+                        btn.Frame.Visible = false  -- Hide red line if it exists
+                    end
                 end
             end
             tabbutton.TextColor3 = Color3.fromRGB(255, 0, 0)  -- Change active tab text color
-            red_underline.Visible = true  -- Show red underline
+            red_line.Visible = true  -- Show red line above the active tab
         end)
     end
 
