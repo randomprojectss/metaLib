@@ -1,927 +1,143 @@
 -- // variables
 local library = {}
 local pages = {}
-local sections = {}
-local multisections = {}
-local mssections = {}
-local toggles = {}
-local buttons = {}
-local sliders = {}
-local dropdowns = {}
-local multiboxs = {}
-local buttonboxs = {}
-local textboxs = {}
-local keybinds = {}
-local colorpickers = {}
-local configloaders = {}
-local watermarks = {}
-local loaders = {}
---
 local utility = {}
---
-local check_exploit = (syn and "Synapse") or (KRNL_LOADED and "Krnl") or (isourclosure and "ScriptWare") or nil
-local plrs = game:GetService("Players")
-local cre = game:GetService("CoreGui")
-local rs = game:GetService("RunService")
-local ts = game:GetService("TweenService") 
-local uis = game:GetService("UserInputService") 
-local hs = game:GetService("HttpService")
-local ws = game:GetService("Workspace")
-local plr = plrs.LocalPlayer
-local cam = ws.CurrentCamera
--- // indexes
-library.__index = library
-pages.__index = pages
-sections.__index = sections
-multisections.__index = multisections
-mssections.__index = mssections
-toggles.__index = toggles
-buttons.__index = buttons
-sliders.__index = sliders
-dropdowns.__index = dropdowns
-multiboxs.__index = multiboxs
-buttonboxs.__index = buttonboxs
-textboxs.__index = textboxs
-keybinds.__index = keybinds
-colorpickers.__index = colorpickers
-configloaders.__index = configloaders
-watermarks.__index = watermarks
-loaders.__index = loaders
+
 -- // functions
-utility.new = function(instance,properties) 
-	-- // instance
-	local ins = Instance.new(instance)
-	-- // properties setting
-	for property,value in pairs(properties) do
-		ins[property] = value
-	end
-	-- // return
-	return ins
+utility.new = function(instance, properties)
+    local ins = Instance.new(instance)
+    for property, value in pairs(properties) do
+        ins[property] = value
+    end
+    return ins
 end
---
-utility.dragify = function(ins,touse)
-	local dragging
-	local dragInput
-	local dragStart
-	local startPos
-	-- 
-	local function update(input)
-		local delta = input.Position - dragStart
-		touse:TweenPosition(UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,0.1,true)
-	end
-	--
-	ins.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			dragStart = input.Position
-			startPos = touse.Position
 
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
-			end)
-		end
-	end)
-	--
-	ins.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-			dragInput = input
-		end
-	end)
-	--
-	uis.InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
-			update(input)
-		end
-	end)
-end
---
-utility.round = function(n,d)
-	return tonumber(string.format("%."..(d or 0).."f",n))
-end
---
-utility.zigzag = function(X)
-	return math.acos(math.cos(X*math.pi))/math.pi
-end
---
-utility.capatalize = function(s)
-	local l = ""
-	for v in s:gmatch('%u') do
-		l = l..v
-	end
-	return l
-end
---
-utility.splitenum = function(enum)
-	local s = tostring(enum):split(".")
-	return s[#s]
-end
---
-utility.from_hex = function(h)
-	local r,g,b = string.match(h,"^#?(%w%w)(%w%w)(%w%w)$")
-	return Color3.fromRGB(tonumber(r,16), tonumber(g,16), tonumber(b,16))
-end
---
-utility.to_hex = function(c)
-	return string.format("#%02X%02X%02X",c.R *255,c.G *255,c.B *255)
-end
---
-utility.removespaces = function(s)
-   return s:gsub(" ","")
-end
--- // main
 function library:new(props)
-	-- // properties
-	local textsize = props.textsize or props.TextSize or props.textSize or props.Textsize or 12
-	local font = props.font or props.Font or "RobotoMono"
-	local name = props.name or props.Name or props.UiName or props.Uiname or props.uiName or props.username or props.Username or props.UserName or props.userName or "new ui"
-	local color = props.color or props.Color or props.mainColor or props.maincolor or props.MainColor or props.Maincolor or props.Accent or props.accent or Color3.fromRGB(225, 58, 81)
-	-- // variables
-	local window = {}
-	-- // main
-	local screen = utility.new(
-		"ScreenGui",
-		{
-			Name = tostring(math.random(0,999999))..tostring(math.random(0,999999)),
-			DisplayOrder = 9999,
-			ResetOnSpawn = false,
-			ZIndexBehavior = "Global",
-			Parent = cre
-		}
-	)
-	-- 
-	if (check_exploit == "Synapse" and syn.request) then
-		syn.protect_gui(screen)
-	end
-	-- 1
-	local outline = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = color,
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderSizePixel = 1,
-			Size = UDim2.new(0,500,0,606),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = screen
-		}
-	)
-	-- 2
-	local outline2 = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,-4,1,-4),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = outline
-		}
-	)
-	-- 3
-	local indent = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = outline2
-		}
-	)
-	-- 4
-	local main = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,1),
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,-10,1,-25),
-			Position = UDim2.new(0.5,0,1,-5),
-			Parent = outline2
-		}
-	)
-	--
-	local title = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,0,0,20),
-			Position = UDim2.new(0.5,0,0,0),
-			Parent = outline2
-		}
-	)
-	-- 5
-	local outline3 = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(24, 24, 24),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = main
-		}
-	)
-	--
-	local titletext = utility.new(
-		"TextLabel",
-		{
-			AnchorPoint = Vector2.new(0.5,0),
-			BackgroundTransparency = 1,
-			 Size = UDim2.new(1,-10,1,0),
-			Position = UDim2.new(0.5,0,0,0),
-			Font = font,
-			Text = name,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextXAlignment = "Left",
-			TextSize = textsize,
-			TextStrokeTransparency = 0,
-			Parent = title
-		}
-	)
-	-- 6
-	local holder = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-6,1,-6),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = main
-		}
-	)
-	-- 7
-	local holder = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-6,1,-6),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = main
-		}
-	)
-	-- 8
-	local tabs = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,1),
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,-20),
-			Position = UDim2.new(0.5,0,1,0),
-			Parent = holder
-		}
-	)
-	--
-	local tabsbuttons = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,0,0,21),
-			Position = UDim2.new(0.5,0,0,0),
-			ZIndex = 2,
-			Parent = holder
-		}
-	)
-	-- 9
-	local outline4 = utility.new(
-		"Frame",
-		{
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0,0,0,0),
-			Parent = tabs
-		}
-	)
-	--
-	utility.new(
-		"UIListLayout",
-		{
-			FillDirection = "Horizontal",
-			Padding = UDim.new(0,2),
-			Parent = tabsbuttons
-		}
-	)
-	--
-	utility.dragify(title,outline)
-	-- // window tbl
-	window = {
-		["screen"] = screen,
-		["holder"] = holder,
-		["labels"] = {},
-		["tabs"] = outline4,
-		["tabsbuttons"] = tabsbuttons,
-		["outline"] = outline,
-		["pages"] = {},
-		["pointers"] = {},
-		["dropdowns"] = {},
-		["multiboxes"] = {},
-		["buttonboxs"] = {},
-		["colorpickers"] = {},
-		["x"] = true,
-		["y"] = true,
-		["key"] = Enum.KeyCode.RightShift,
-		["textsize"] = textsize,
-		["font"] = font,
-		["theme"] = {
-			["accent"] = color
-		},
-		["themeitems"] = {
-			["accent"] = {
-				["BackgroundColor3"] = {},
-				["BorderColor3"] = {},
-				["TextColor3"] = {}
-			}
-		}
-	}
-	--
-	table.insert(window.themeitems["accent"]["BackgroundColor3"],outline)
-	--
-	local toggled = true
-	local cooldown = false
-	local saved = UDim2.new(0,0,0,0)
-	--
-	uis.InputBegan:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.Keyboard then
-			if Input.KeyCode == window.key then
-				if cooldown == false then
-					if toggled then
-						cooldown = true
-						toggled = not toggled
-						saved = outline.Position
-						local xx,yy = 0,0
-						local xxx,yyy = 0,0
-						--
-						if (outline.AbsolutePosition.X+(outline.AbsoluteSize.X/2)) < (cam.ViewportSize.X/2) then
-							xx = -3
-						else
-							xx = 3
-						end
-						--
-						if window.y then
-							if (outline.AbsolutePosition.Y+(outline.AbsoluteSize.Y/2)) < (cam.ViewportSize.Y/2) then
-								yy = -3
-							else
-								yy = 3
-							end
-						else
-							yy = saved.Y.Scale
-							yyy = saved.Y.Offset
-						end
-						--
-						if window.x == false and window.y == false then
-							screen.Enabled = false
-						else
-							ts:Create(outline, TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.In), {Position = UDim2.new(xx,xxx,yy,yyy)}):Play()
-						end
-						wait(0.5)
-						cooldown = false
-					else
-						cooldown = true
-						toggled = not toggled
-						if window.x == false and window.y == false then
-							screen.Enabled = true
-						else
-							ts:Create(outline, TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out), {Position = saved}):Play()
-						end
-						wait(0.5)
-						cooldown = false
-					end
-				end
-			end
-		end
-	end)
-	--
-	window.labels[#window.labels+1] = titletext
-	-- // metatable indexing + return
-	setmetatable(window, library)
-	return window
+    local name = props.name or "New UI"
+    local color = props.color or Color3.fromRGB(225, 58, 81)
+
+    local window = {}
+    
+    local screen = utility.new(
+        "ScreenGui",
+        {
+            Name = tostring(math.random(0, 999999)),
+            DisplayOrder = 9999,
+            ResetOnSpawn = false,
+            ZIndexBehavior = "Global",
+            Parent = game.CoreGui
+        }
+    )
+
+    local outline = utility.new(
+        "Frame",
+        {
+            BackgroundColor3 = color,
+            Size = UDim2.new(0, 500, 0, 606),
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            Parent = screen
+        }
+    )
+
+    local main = utility.new(
+        "Frame",
+        {
+            BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+            Size = UDim2.new(1, 0, 1, 0),
+            Position = UDim2.new(0, 0, 0, 0),
+            Parent = outline
+        }
+    )
+
+    local title = utility.new(
+        "TextLabel",
+        {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 20),
+            Position = UDim2.new(0, 0, 0, 0),
+            Font = Enum.Font.SourceSansBold,
+            Text = name,
+            TextColor3 = Color3.fromRGB(255, 255, 255),
+            TextSize = 16,
+            Parent = main
+        }
+    )
+
+    local tabs = utility.new(
+        "Frame",
+        {
+            BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+            Size = UDim2.new(1, 0, 0, 25),
+            Position = UDim2.new(0, 0, 0, 20),
+            Parent = main
+        }
+    )
+
+    local tabsbuttons = utility.new(
+        "Frame",
+        {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 1, 0),
+            Parent = tabs
+        }
+    )
+
+    utility.new(
+        "UIListLayout",
+        {
+            FillDirection = Enum.FillDirection.Horizontal,
+            Padding = UDim.new(0, 10),
+            Parent = tabsbuttons
+        }
+    )
+
+    -- // page function
+    function window:page(props)
+        local name = props.name or "New Tab"
+        
+        local tabbutton = utility.new(
+            "TextButton",
+            {
+                BackgroundTransparency = 1,  -- No background
+                Size = UDim2.new(0, 100, 1, 0),  -- Width of each tab
+                Text = name,
+                TextColor3 = Color3.fromRGB(255, 255, 255),
+                TextSize = 14,
+                Parent = tabsbuttons
+            }
+        )
+
+        local red_underline = utility.new(
+            "Frame",
+            {
+                BackgroundColor3 = Color3.fromRGB(255, 0, 0),  -- Red underline color
+                Size = UDim2.new(1, 0, 0, 2),  -- A thin line at the bottom of the tab
+                Position = UDim2.new(0, 0, 1, 0),  -- Positioned at the bottom
+                BorderSizePixel = 0,  -- No border for the underline
+                Visible = false,  -- Initially hidden for inactive tabs
+                Parent = tabbutton
+            }
+        )
+
+        tabbutton.MouseButton1Click:Connect(function()
+            for _, btn in pairs(tabsbuttons:GetChildren()) do
+                if btn:IsA("TextButton") then
+                    btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Reset text color
+                    red_underline.Visible = false  -- Hide red underline
+                end
+            end
+            tabbutton.TextColor3 = Color3.fromRGB(255, 0, 0)  -- Change active tab text color
+            red_underline.Visible = true  -- Show red underline
+        end)
+    end
+
+    window.tabs = tabsbuttons
+    setmetatable(window, library)
+    return window
 end
---
-function library:watermark()
-	local watermark = {}
-	--
-	local outline = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(1,0),
-			BackgroundColor3 = self.theme.accent,
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderSizePixel = 1,
-			Size = UDim2.new(0,300,0,26),
-			Position = UDim2.new(1,-10,0,10),
-			ZIndex = 9900,
-			Visible = false,
-			Parent = self.screen
-		}
-	)
-	--
-	table.insert(self.themeitems["accent"]["BackgroundColor3"],outline)
-	--
-	local outline2 = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,-4,1,-4),
-			Position = UDim2.new(0.5,0,0.5,0),
-			ZIndex = 9901,
-			Parent = outline
-		}
-	)
-	--
-	local indent = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0.5,0,0.5,0),
-			ZIndex = 9902,
-			Parent = outline2
-		}
-	)
-	--
-	local title = utility.new(
-		"TextLabel",
-		{
-			AnchorPoint = Vector2.new(0.5,0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-10,1,0),
-			Position = UDim2.new(0.5,0,0,0),
-			Font = self.font,
-			Text = "",
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextXAlignment = "Left",
-			TextSize = self.textsize,
-			TextStrokeTransparency = 0,
-			ZIndex = 9903,
-			Parent = indent
-		}
-	)
-	--
-	local con
-	con = title:GetPropertyChangedSignal("TextBounds"):Connect(function()
-		outline.Size = UDim2.new(0,title.TextBounds.X+20,0,26)
-	end)
-	--
-	watermark = {
-		["outline"] = outline,
-		["outline2"] = outline2,
-		["indent"] = indent,
-		["title"] = title,
-		["connection"] = con
-	}
-	--
-	self.labels[#self.labels+1] = title
-	--
-	setmetatable(watermark,watermarks)
-	return watermark
-end
---
-function watermarks:update(content)
-	local content = content or {}
-	local watermark = self
-	--
-	local text = ""
-	--
-	for i,v in pairs(content) do
-		text = text..i..": "..v.."  "
-	end
-	--
-	text = text:sub(0, -3)
-	--
-	watermark.title.Text = text
-end
---
-function watermarks:updateside(side)
-	side = utility.removespaces(tostring(side):lower())
-	--
-	local sides = {
-		topright = {
-			AnchorPoint = Vector2.new(1,0),
-			Position = UDim2.new(1,-10,0,10)
-		},
-		topleft = {
-			AnchorPoint = Vector2.new(0,0),
-			Position = UDim2.new(0,10,0,10)
-		},
-		bottomright = {
-			AnchorPoint = Vector2.new(1,1),
-			Position = UDim2.new(1,-10,1,-10)
-		},
-		bottomleft = {
-			AnchorPoint = Vector2.new(0,1),
-			Position = UDim2.new(0,10,1,-10)
-		}
-	}
-	--
-	if sides[side] then
-		self.outline.AnchorPoint = sides[side].AnchorPoint
-		self.outline.Position = sides[side].Position
-	end
-end
---
-function library:loader(props)
-	local name = props.name or props.Name or props.LoaderName or props.Loadername or props.loaderName or props.loadername or "Loader"
-	local scriptname = props.scriptname or props.Scriptname or props.ScriptName or props.scriptName or "Universal"
-	local closed = props.close or props.Close or props.closecallback or props.Closecallback or props.CloseCallback or props.closeCallback or function()end
-	local logedin = props.login or props.Login or props.logincallback or props.Logincallback or props.LoginCallback or props.loginCallback or function()end
-	local loader = {}
-	--
-	local screen = utility.new(
-		"ScreenGui",
-		{
-			Name = tostring(math.random(0,999999))..tostring(math.random(0,999999)),
-			DisplayOrder = 9999,
-			ResetOnSpawn = false,
-			ZIndexBehavior = "Global",
-			Parent = cre
-		}
-	)
-	if (check_exploit == "Synapse" and syn.request) then
-		syn.protect_gui(screen)
-	end
-	--
-	local outline = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(168, 52, 235),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderSizePixel = 1,
-			Size = UDim2.new(0,300,0,90),
-			Position = UDim2.new(0.5,0,0.5,0),
-			ZIndex = 9900,
-			Visible = false,
-			Parent = screen
-		}
-	)
-	--
-	local outline2 = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,-4,1,-4),
-			Position = UDim2.new(0.5,0,0.5,0),
-			ZIndex = 9901,
-			Parent = outline
-		}
-	)
-	--
-	local indent = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0.5,0,0.5,0),
-			ZIndex = 9902,
-			Parent = outline2
-		}
-	)
-	--
-	local title = utility.new(
-		"TextLabel",
-		{
-			AnchorPoint = Vector2.new(0.5,0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-10,0,20),
-			Position = UDim2.new(0.5,0,0,0),
-			Font = "RobotoMono",
-			Text = name,
-			TextColor3 = Color3.fromRGB(168, 52, 235),
-			TextXAlignment = "Center",
-			TextSize = 12,
-			TextStrokeTransparency = 0,
-			ZIndex = 9903,
-			Parent = indent
-		}
-	)
-	--
-	local scripttitle = utility.new(
-		"TextLabel",
-		{
-			AnchorPoint = Vector2.new(0.5,0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-10,0,20),
-			Position = UDim2.new(0.5,0,0,20),
-			Font = "RobotoMono",
-			Text = "Script: "..scriptname,
-			TextColor3 = Color3.fromRGB(255, 255, 255),
-			TextXAlignment = "Center",
-			TextSize = 12,
-			TextStrokeTransparency = 0,
-			ZIndex = 9903,
-			Parent = indent
-		}
-	)
-	--
-	local makebutton = function(name,parent)
-		local button_holder = utility.new(
-			"Frame",
-			{
-				BackgroundTransparency = 1,
-				BorderSizePixel = 0,
-				ZIndex = 9904,
-				Parent = parent
-			}
-		)
-		--
-		local button_outline = utility.new(
-			"Frame",
-			{
-				BackgroundColor3 = Color3.fromRGB(24, 24, 24),
-				BorderColor3 = Color3.fromRGB(12, 12, 12),
-				BorderMode = "Inset",
-				BorderSizePixel = 1,
-				Position = UDim2.new(0,0,0,0),
-				Size = UDim2.new(1,0,1,0),
-				ZIndex = 9905,
-				Parent = button_holder
-			}
-		)
-		--
-		local button_outline2 = utility.new(
-			"Frame",
-			{
-				BackgroundColor3 = Color3.fromRGB(24, 24, 24),
-				BorderColor3 = Color3.fromRGB(56, 56, 56),
-				BorderMode = "Inset",
-				BorderSizePixel = 1,
-				Position = UDim2.new(0,0,0,0),
-				Size = UDim2.new(1,0,1,0),
-				ZIndex = 9906,
-				Parent = button_outline
-			}
-		)
-		--
-		local button_color = utility.new(
-			"Frame",
-			{
-				AnchorPoint = Vector2.new(0,0),
-				BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-				BorderSizePixel = 0,
-				Size = UDim2.new(1,0,0,0),
-				Position = UDim2.new(0,0,0,0),
-				ZIndex = 9907,
-				Parent = button_outline2
-			}
-		)
-		--
-		utility.new(
-			"UIGradient",
-			{
-				Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(199, 191, 204)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))},
-				Rotation = 90,
-				Parent = button_color
-			}
-		)
-		--
-		local button_button = utility.new(
-			"TextButton",
-			{
-				AnchorPoint = Vector2.new(0,0),
-				BackgroundTransparency = 1,
-				Size = UDim2.new(1,0,1,0),
-				Position = UDim2.new(0,0,0,0),
-				Text = name,
-				TextColor3 = Color3.fromRGB(255,255,255),
-				TextSize = 12,
-				TextStrokeTransparency = 0,
-				Font = "RobotoMono",
-				ZIndex = 9908,
-				Parent = button_holder
-			}
-		)
-		--
-		return {button_holder,button_outline,button_button}
-	end
-	--
-	local close = makebutton("close",indent)
-	local login = makebutton("login",indent)
-	--
-	close[1].AnchorPoint = Vector2.new(0.5,0)
-	close[1].Size = UDim2.new(0.5,0,0,25)
-	close[1].Position = UDim2.new(0.5,0,0.75,0)
-	close[1].BackgroundTransparency = 0
-	close[2].Size = UDim2.new(1,0,1,0)
-	close[2].BackgroundTransparency = 1
-	close[3].MouseButton1Click:Connect(function()
-		close[1].Visible = false
-		outline.Visible = false
-		closed()
-	end)
-	--
-	login[1].AnchorPoint = Vector2.new(0.5,0)
-	login[1].Size = UDim2.new(0.5,0,0,25)
-	login[1].Position = UDim2.new(0.5,0,0.5,0)
-	login[1].BackgroundTransparency = 0
-	login[2].Size = UDim2.new(1,0,1,0)
-	login[2].BackgroundTransparency = 1
-	login[3].MouseButton1Click:Connect(function()
-		logedin()
-	end)
-	--
-	loader = {
-		["outline"] = outline,
-		["outline2"] = outline2,
-		["indent"] = indent,
-		["title"] = title,
-		["scripttitle"] = scripttitle,
-		["close"] = close,
-		["login"] = login
-	}
-	--
-	setmetatable(loader,loaders)
-	return loader
-end
---
-function library:close()
-	self.screen:Destroy()
-end
--- // tab functions
-function library:page(props)
-	-- // properties
-	local name = props.name or props.Name or props.page or props.Page or props.pagename or props.Pagename or props.PageName or props.pageName or "new ui"
-	
-	-- // variables
-	local page = {}
 
-	-- // main
-	local tabbutton = utility.new(
-		"Frame",
-		{
-			BackgroundTransparency = 1,  -- Make the background fully transparent
-			BorderSizePixel = 0,  -- No border
-			Size = UDim2.new(0, 60, 0, 20),  -- Adjust size as needed
-			Parent = self.tabsbuttons
-		}
-	)
-	
-	local outline = utility.new(
-		"Frame",
-		{
-			BackgroundTransparency = 1,  -- Make the outline fully transparent
-			BorderSizePixel = 0,  -- No border
-			Size = UDim2.new(1, 0, 1, 0),
-			Position = UDim2.new(0, 0, 0, 0),
-			Parent = tabbutton
-		}
-	)
-
-	local button = utility.new(
-		"TextButton",
-		{
-			AnchorPoint = Vector2.new(0, 0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1, 0, 1, 0),
-			Position = UDim2.new(0, 0, 0, 0),
-			Text = "",
-			Parent = tabbutton
-		}
-	)
-	
-	-- Create the red underline for the active tab
-	local red_underline = utility.new(
-		"Frame",
-		{
-			BackgroundColor3 = Color3.fromRGB(255, 0, 0),  -- Red underline color
-			Size = UDim2.new(1, 0, 0, 2),  -- A thin line at the bottom of the tab
-			Position = UDim2.new(0, 0, 1, -2),  -- Positioned at the bottom
-			BorderSizePixel = 0,  -- No border for the underline
-			Visible = false,  -- Initially hidden for inactive tabs
-			Parent = tabbutton
-		}
-	)
-
-	local pageholder = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1, -20, 1, -20),
-			Position = UDim2.new(0.5, 0, 0.5, 0),
-			Visible = false,
-			Parent = self.tabs
-		}
-	)
-
-	local left = utility.new(
-		"ScrollingFrame",
-		{
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Size = UDim2.new(0.5, -5, 1, 0),
-			Position = UDim2.new(0, 0, 0, 0),
-			AutomaticCanvasSize = "Y",
-			CanvasSize = UDim2.new(0, 0, 0, 0),
-			ScrollBarImageTransparency = 1,
-			ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0),
-			ScrollBarThickness = 0,
-			ClipsDescendants = false,
-			VerticalScrollBarInset = "None",
-			VerticalScrollBarPosition = "Right",
-			Parent = pageholder
-		}
-	)
-
-	utility.new(
-		"UIListLayout",
-		{
-			FillDirection = "Vertical",
-			Padding = UDim.new(0, 10),
-			Parent = left
-		}
-	)
-
-	local right = utility.new(
-		"ScrollingFrame",
-		{
-			AnchorPoint = Vector2.new(1, 0),
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Size = UDim2.new(0.5, -5, 1, 0),
-			Position = UDim2.new(1, 0, 0, 0),
-			AutomaticCanvasSize = "Y",
-			CanvasSize = UDim2.new(0, 0, 0, 0),
-			ScrollBarImageTransparency = 1,
-			ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0),
-			ScrollBarThickness = 0,
-			ClipsDescendants = false,
-			VerticalScrollBarInset = "None",
-			VerticalScrollBarPosition = "Right",
-			Parent = pageholder
-		}
-	)
-
-	utility.new(
-		"UIListLayout",
-		{
-			FillDirection = "Vertical",
-			Padding = UDim.new(0, 10),
-			Parent = right
-		}
-	)
-
-	-- // page tbl
-	page = {
-		["library"] = self,
-		["outline"] = outline,
-		["page"] = pageholder,
-		["open"] = false,
-		["red_underline"] = red_underline,  -- Add reference to the red underline
-	}
-
-	-- Handle tab switching logic
-	button.MouseButton1Down:Connect(function()
-		if page.open == false then
-			for i, v in pairs(self.pages) do
-				if v ~= page then
-					if v.open then
-						v.page.Visible = false
-						v.open = false
-						v.red_underline.Visible = false  -- Hide red underline on inactive tabs
-					end
-				end
-			end
-			-- Open the selected tab
-			self:closewindows()
-			page.page.Visible = true
-			page.open = true
-			page.red_underline.Visible = true  -- Show red underline for the active tab
-		end
-	end)
-
-	-- Return the page table
-	table.insert(self.pages, page)
-	setmetatable(page, pages)
-	return page
-end
+-- Example of using the library
+local myLibrary = library:new({ name = "My UI", color = Color3.fromRGB(60, 60, 60) })
+local myPage = myLibrary:page({ name = "Tab 1" })
+local myPage2 = myLibrary:page({ name = "Tab 2" })
