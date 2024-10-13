@@ -47,98 +47,7 @@ colorpickers.__index = colorpickers
 configloaders.__index = configloaders
 watermarks.__index = watermarks
 loaders.__index = loaders
-
-    -- // functions
-    
-    -- Updated function to create new tabs with a red line above them
-    function library:page(props)
-        -- // properties
-        local name = props.name or "New Tab"
-        -- // variables
-        local page = {}
-
-        -- Create the tab button
-        local tabbutton = utility.new(
-            "Frame",
-            {
-                BackgroundColor3 = Color3.fromRGB(20, 20, 20), -- Tab background color
-                BorderColor3 = Color3.fromRGB(12, 12, 12), -- Default border color
-                BorderMode = "Inset",
-                BorderSizePixel = 1,
-                Size = UDim2.new(0, 75, 1, 0), -- Size of the tab
-                Parent = self.tabsbuttons
-            }
-        )
-
-        -- Create the red line (appears above the tab when selected)
-        local redline = utility.new(
-            "Frame",
-            {
-                BackgroundColor3 = Color3.fromRGB(225, 58, 81), -- Red line color
-                BorderSizePixel = 0,
-                Size = UDim2.new(1, 0, 0, 2), -- Height of the red line
-                Position = UDim2.new(0, 0, 0, -2), -- Position the red line above the tab
-                Visible = false, -- Initially hidden
-                Parent = tabbutton
-            }
-        )
-
-        -- Create the tab button text label
-        local button = utility.new(
-            "TextButton",
-            {
-                AnchorPoint = Vector2.new(0, 0),
-                BackgroundTransparency = 1,
-                Size = UDim2.new(1, 0, 1, 0),
-                Position = UDim2.new(0, 0, 0, 0),
-                Text = name,
-                TextColor3 = Color3.fromRGB(255, 255, 255), -- Text color
-                TextSize = 12, -- Text size
-                Font = self.font,
-                Parent = tabbutton
-            }
-        )
-
-        -- Function to show/hide the red line when a tab is clicked
-        button.MouseButton1Down:Connect(function()
-            for i, v in pairs(self.pages) do
-                if v ~= page then
-                    v.page.Visible = false
-                    v.redline.Visible = false -- Hide red line on other tabs
-                end
-            end
-            page.page.Visible = true
-            redline.Visible = true -- Show red line on the selected tab
-        end)
-
-        -- Tab page holder
-        local pageholder = utility.new(
-            "Frame",
-            {
-                AnchorPoint = Vector2.new(0.5, 0.5),
-                BackgroundTransparency = 1,
-                Size = UDim2.new(1, -20, 1, -20),
-                Position = UDim2.new(0.5, 0, 0.5, 0),
-                Visible = false, -- Initially hidden
-                Parent = self.tabs
-            }
-        )
-
-        -- Store the page details
-        page = {
-            ["library"] = self,
-            ["tabbutton"] = tabbutton,
-            ["redline"] = redline, -- Store reference to the red line
-            ["page"] = pageholder,
-            ["open"] = false
-        }
-
-        -- Add the new tab to the pages list
-        table.insert(self.pages, page)
-
-        return page
-    end
-    
+-- // functions
 utility.new = function(instance,properties) 
 	-- // instance
 	local ins = Instance.new(instance)
@@ -956,201 +865,98 @@ function library:settextsize(size)
 	end
 end
 --
+-- Updated function to create new tabs with a red line above them
 function library:page(props)
-	-- // properties
-	local name = props.name or props.Name or props.page or props.Page or props.pagename or props.Pagename or props.PageName or props.pageName or "new ui"
-	-- // variables
-	local page = {}
-	-- // main
-	local tabbutton = utility.new(
-		"Frame",
-		{
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(0,75,1,0),
-			Parent = self.tabsbuttons
-		}
-	)
-	--
-	local outline = utility.new(
-		"Frame",
-		{
-			BackgroundColor3 = Color3.fromRGB(24, 24, 24),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0,0,0,0),
-			Parent = tabbutton
-		}
-	)
-	--
-	local button = utility.new(
-		"TextButton",
-		{
-			AnchorPoint = Vector2.new(0,0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0,0,0,0),
-			Text = "",
-			Parent = tabbutton
-		}
-	)
-	--
-	local r_line = utility.new(
-		"Frame",
-		{
-			BackgroundColor3 = Color3.fromRGB(56, 56, 56),
-			BorderSizePixel = 0,
-			Size = UDim2.new(0,1,0,1),
-			Position = UDim2.new(1,0,1,1),
-			ZIndex = 2,
-			Parent = outline
-		}
-	)
-	--
-	local l_line = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(1,0),
-			BackgroundColor3 = Color3.fromRGB(56, 56, 56),
-			BorderSizePixel = 0,
-			Size = UDim2.new(0,1,0,1),
-			Position = UDim2.new(0,0,1,1),
-			ZIndex = 2,
-			Parent = outline
-		}
-	)
-	--
-	local line = utility.new(
-		"Frame",
-		{
-			BackgroundColor3 = Color3.fromRGB(24, 24, 24),
-			BorderSizePixel = 0,
-			Size = UDim2.new(1,0,0,2),
-			Position = UDim2.new(0,0,1,0),
-			ZIndex = 2,
-			Parent = outline
-		}
-	)
-	--
-	local label = utility.new(
-		"TextLabel",
-		{
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,0,0,20),
-			Position = UDim2.new(0,0,0,0),
-			Font = self.font,
-			Text = name,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = self.textsize,
-			TextStrokeTransparency = 0,
-			Parent = outline
-		}
-	)
-	--
-	local pageholder = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-20,1,-20),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Visible = false,
-			Parent = self.tabs
-		}
-	)
-	--
-	local left = utility.new(
-		"ScrollingFrame",
-		{
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Size = UDim2.new(0.5,-5,1,0),
-			Position = UDim2.new(0,0,0,0),
-			AutomaticCanvasSize = "Y",
-			CanvasSize = UDim2.new(0,0,0,0),
-			ScrollBarImageTransparency = 1,
-			ScrollBarImageColor3 = Color3.fromRGB(0,0,0),
-			ScrollBarThickness = 0,
-			ClipsDescendants = false,
-			VerticalScrollBarInset = "None",
-			VerticalScrollBarPosition = "Right",
-			Parent = pageholder
-		}
-	)
-	--
-	utility.new(
-		"UIListLayout",
-		{
-			FillDirection = "Vertical",
-			Padding = UDim.new(0,10),
-			Parent = left
-		}
-	)
-	--
-	local right = utility.new(
-		"ScrollingFrame",
-		{
-			AnchorPoint = Vector2.new(1,0),
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Size = UDim2.new(0.5,-5,1,0),
-			Position = UDim2.new(1,0,0,0),
-			AutomaticCanvasSize = "Y",
-			CanvasSize = UDim2.new(0,0,0,0),
-			ScrollBarImageTransparency = 1,
-			ScrollBarImageColor3 = Color3.fromRGB(0,0,0),
-			ScrollBarThickness = 0,
-			ClipsDescendants = false,
-			VerticalScrollBarInset = "None",
-			VerticalScrollBarPosition = "Right",
-			Parent = pageholder
-		}
-	)
-	--
-	utility.new(
-		"UIListLayout",
-		{
-			FillDirection = "Vertical",
-			Padding = UDim.new(0,10),
-			Parent = right
-		}
-	)
-	-- // page tbl
-	page = {
-		["library"] = self,
-		["outline"] = outline,
-		["r_line"] = r_line,
-		["l_line"] = l_line,
-		["line"] = line,
-		["page"] = pageholder,
-		["left"] = left,
-		["right"] = right,
-		["open"] = false,
-		["pointers"] = {}
-	}
-	--
-	table.insert(self.pages,page)
-	--
-	button.MouseButton1Down:Connect(function()
-		if page.open == false then
-			for i,v in pairs(self.pages) do
-				if v ~= page then
-					if v.open then
-						v.page.Visible = false
-						v.open = false
-						v.outline.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
-						v.line.Size = UDim2.new(1,0,0,2)
-						v.line.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
-					end
-				end
-			end
-			--
+    -- // properties
+    local name = props.name or "New Tab"
+    -- // variables
+    local page = {}
+
+    -- Create the tab button
+    local tabbutton = utility.new(
+        "Frame",
+        {
+            BackgroundColor3 = Color3.fromRGB(20, 20, 20), -- Tab background color
+            BorderColor3 = Color3.fromRGB(12, 12, 12), -- Default border color
+            BorderMode = "Inset",
+            BorderSizePixel = 1,
+            Size = UDim2.new(0, 75, 1, 0), -- Size of the tab
+            Parent = self.tabsbuttons
+        }
+    )
+
+    -- Create the red line (appears above the tab when selected)
+    local redline = utility.new(
+        "Frame",
+        {
+            BackgroundColor3 = Color3.fromRGB(225, 58, 81), -- Red line color
+            BorderSizePixel = 0,
+            Size = UDim2.new(1, 0, 0, 2), -- Height of the red line
+            Position = UDim2.new(0, 0, 0, -2), -- Position the red line above the tab
+            Visible = false, -- Initially hidden
+            Parent = tabbutton
+        }
+    )
+
+    -- Create the tab button text label
+    local button = utility.new(
+        "TextButton",
+        {
+            AnchorPoint = Vector2.new(0, 0),
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 1, 0),
+            Position = UDim2.new(0, 0, 0, 0),
+            Text = name,
+            TextColor3 = Color3.fromRGB(255, 255, 255), -- Text color
+            TextSize = 12, -- Text size
+            Font = self.font,
+            Parent = tabbutton
+        }
+    )
+
+    -- Function to show/hide the red line when a tab is clicked
+    button.MouseButton1Down:Connect(function()
+        for i, v in pairs(self.pages) do
+            if v ~= page then
+                v.page.Visible = false
+                v.redline.Visible = false -- Hide red line on other tabs
+            else
+                v.redline.Visible = true -- Show red line on the selected tab
+            end
+        end
+        page.page.Visible = true
+    end)
+
+    -- Tab page holder
+    local pageholder = utility.new(
+        "Frame",
+        {
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, -20, 1, -20),
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            Visible = false, -- Initially hidden
+            Parent = self.tabs
+        }
+    )
+
+    -- Store the page details
+    page = {
+        ["library"] = self,
+        ["tabbutton"] = tabbutton,
+        ["redline"] = redline, -- Store reference to the red line
+        ["page"] = pageholder,
+        ["open"] = false
+    }
+
+    -- Add the new tab to the pages list
+    table.insert(self.pages, page)
+
+    return page
+end
+
+
 			self:closewindows()
-			--
 			page.page.Visible = true
 			page.open = true
 			page.outline.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
@@ -1876,7 +1682,7 @@ function sections:slider(props)
 		"Frame",
 		{
 			BackgroundTransparency = 1,
-			Size = UDim2.new(1,0,0,1),
+			Size = UDim2.new(1,0,0,25),
 			Parent = self.content
 		}
 	)
